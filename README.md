@@ -21,7 +21,7 @@ mv .env.sample .env
 ./sgbus
 ```
 ## Getting Your Key
-You can get your key [here].(http://www.mytransport.sg/content/mytransport/home/dataMall.html)
+You can get your key [here](http://www.mytransport.sg/content/mytransport/home/dataMall.html).
 
 ## API
 1. `http://localhost:3000/bus-stop/123213`: Retrieves data for busstop with id `123123`
