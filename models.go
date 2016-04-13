@@ -8,7 +8,7 @@ import (
 )
 
 type busService struct {
-	BusNumber int
+	BusNumber string
 	Status    int
 	NextBus   []time.Time
 }
@@ -51,7 +51,7 @@ func (s *busService) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &aux); err != nil {
 		return err
 	}
-	s.BusNumber, _ = strconv.Atoi(aux.ServiceNumber)
+	s.BusNumber = aux.ServiceNumber
 	if aux.Status == "In Operation" {
 		s.Status = 1
 	} else {
@@ -76,7 +76,7 @@ func (s *busService) UnmarshalJSON(data []byte) error {
 		}
 		s.NextBus = []time.Time{a, b, c}
 	} else {
-		s.NextBus = []time.Time{time.Time{}, time.Time{}, time.Time{}}
+		s.NextBus = nil
 	}
 
 	return nil
