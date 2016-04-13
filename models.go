@@ -62,22 +62,37 @@ func (s *busService) UnmarshalJSON(data []byte) error {
 		a, err := time.Parse(time.RFC3339, aux.NextBus.EstimatedArrival)
 		if err != nil {
 			log.Printf("Error! Failed to parse NextBus time: %s\n", err)
-			a = nil
+			a = time.Time{}
 		}
 		b, err := time.Parse(time.RFC3339, aux.SubsequentBus.EstimatedArrival)
 		if err != nil {
 			log.Printf("Error! Failed to parse SubsequentBus time: %s\n", err)
-			b = nil
+			b = time.Time{}
 		}
 		c, err := time.Parse(time.RFC3339, aux.SubsequentBus3.EstimatedArrival)
 		if err != nil {
 			log.Printf("Error! Failed to parse SubsequentBus3 time: %s\n", err)
-			c = nil
+			c = time.Time{}
 		}
 		s.NextBus = []time.Time{a, b, c}
 	} else {
-		s.NextBus = nil
+		s.NextBus = []time.Time{time.Time{}, time.Time{}, time.Time{}}
 	}
 
 	return nil
+}
+
+func (s *busService) MarshalJSON() ([]byte, error) {
+	a := []int{}
+	now := time.Now()
+	for _, t := range s.NextBus {
+		if !t.IsZero() {
+			a = append(a, int(t.Sub(now).Seconds()))
+		}
+	}
+	return json.Marshal(map[string]interface{}{
+		"BusNumber": s.BusNumber,
+		"Status":    s.Status,
+		"NextBus":   a,
+	})
 }
