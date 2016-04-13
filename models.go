@@ -58,22 +58,26 @@ func (s *busService) UnmarshalJSON(data []byte) error {
 		s.Status = 0
 	}
 
-	a, err := time.Parse(time.RFC3339, aux.NextBus.EstimatedArrival)
-	if err != nil {
-		log.Printf("Error! Failed to parse NextBus time: %s\n", err)
-		return err
-	}
-	b, err := time.Parse(time.RFC3339, aux.SubsequentBus.EstimatedArrival)
-	if err != nil {
-		log.Printf("Error! Failed to parse SubsequentBus time: %s\n", err)
-		return err
-	}
-	c, err := time.Parse(time.RFC3339, aux.SubsequentBus3.EstimatedArrival)
-	if err != nil {
-		log.Printf("Error! Failed to parse SubsequentBus3 time: %s\n", err)
-		return err
+	if s.Status == 1 {
+		a, err := time.Parse(time.RFC3339, aux.NextBus.EstimatedArrival)
+		if err != nil {
+			log.Printf("Error! Failed to parse NextBus time: %s\n", err)
+			a = nil
+		}
+		b, err := time.Parse(time.RFC3339, aux.SubsequentBus.EstimatedArrival)
+		if err != nil {
+			log.Printf("Error! Failed to parse SubsequentBus time: %s\n", err)
+			b = nil
+		}
+		c, err := time.Parse(time.RFC3339, aux.SubsequentBus3.EstimatedArrival)
+		if err != nil {
+			log.Printf("Error! Failed to parse SubsequentBus3 time: %s\n", err)
+			c = nil
+		}
+		s.NextBus = []time.Time{a, b, c}
+	} else {
+		s.NextBus = nil
 	}
 
-	s.NextBus = []time.Time{a, b, c}
 	return nil
 }
